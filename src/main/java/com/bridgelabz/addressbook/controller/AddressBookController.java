@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bridgelabz.addressbook.model.AddressBook;
+import com.bridgelabz.addressbook.dto.AddressBookDTO;
 
 //Created controller class to make api calls
 @RestController
@@ -20,8 +20,8 @@ public class AddressBookController {
 		return "Hello "+name;
 	}
 	@PostMapping("/getMessage")
-	public String getMessage(@RequestBody AddressBook addressBook) {
-		return "Hello "+addressBook.getFirstName()+" "+addressBook.getLastName();
+	public String getMessage(@RequestBody AddressBookDTO addressBookDTO) {
+		return "Hello "+addressBookDTO.getFirstName()+" "+addressBookDTO.getLastName();
 	}
 	@GetMapping("/getHi/{fName}")
 	public String getHelloMessage(@PathVariable String fName) {

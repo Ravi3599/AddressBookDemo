@@ -1,11 +1,9 @@
-package com.bridgelabz.addressbook.model;
+package com.bridgelabz.addressbook.dto;
 
 import lombok.Data;
 
 @Data
-public class AddressBook {
-
-	private Integer id;
+public class AddressBookDTO {
 	private String firstName;
 	private String lastName;
 	private String email;
@@ -14,7 +12,7 @@ public class AddressBook {
 	private String state;
 	private Integer zip;
 	
-	public AddressBook() {
+	public AddressBookDTO() {
 		super();
-	}
+	}	
 }
