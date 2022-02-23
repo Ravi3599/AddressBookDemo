@@ -2,6 +2,7 @@ package com.bridgelabz.addressbook.model;
 
 import lombok.Data;
 
+//Created Model class AddressBook with different fields
 @Data
 public class AddressBook {
 
