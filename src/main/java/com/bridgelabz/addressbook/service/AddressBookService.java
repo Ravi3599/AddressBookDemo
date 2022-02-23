@@ -7,51 +7,88 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bridgelabz.addressbook.dto.AddressBookDTO;
+import com.bridgelabz.addressbook.exception.AddressBookException;
 import com.bridgelabz.addressbook.model.AddressBook;
 import com.bridgelabz.addressbook.repository.AddressBookRepository;
 
-//Created service class to serve api calls of controller
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class AddressBookService implements IAddressBookService{
-	//Autowired AddressBookRepositoy to inject its dependency here
+	//Autowired repository class so we can inject its dependecy here
 	@Autowired
 	AddressBookRepository repo;
 	
-	//Created method which serve controllers api call to return welcome message
-	public String getMessage() {
-		return "Welcome to Address Book Application";
+	//Created service method which serves controller api to return welcome message
+	public String getWelcome() {
+		return "Welcome to Address Book !";
 	}
-	//Created method which serve controllers api call to save record to repo
-	public AddressBook saveRecordToRepo(AddressBookDTO addressBookDTO) {
-		AddressBook addressBook = new AddressBook(addressBookDTO);
-		AddressBook newAddressBook = repo.save(addressBook);
+	//Created service method which serves controller api to post data 
+	public AddressBook saveDataToRepo(AddressBookDTO addressBookDTO) {
+		AddressBook newAddressBook = new AddressBook(addressBookDTO);
+		repo.save(newAddressBook);
+		log.info("Address Book Data got saved");
 		return newAddressBook;
 	}
-	//Created method which serves controllers api call to retrieve all records
-	public List<AddressBook> getAllRecords() {
-		List<AddressBook> list = repo.findAll();
-		return list;
-	}
-	//Created method which serves controllers api call to retrieve record by id
-	public AddressBook getRecordById(Integer id){
+	//Created service method which serves controller api to get record by id 
+	public AddressBook getRecordById(Integer id) {
+//		List<AddressBook> addressList = repo.findAll();
+//		AddressBook newAddressBook = addressList.stream().filter(addressData->addressData.getId()==id)
+//				.findFirst()
+//				.orElseThrow(()->new AddressBookException("Particular address book details not found"));
 		Optional<AddressBook> newAddressBook = repo.findById(id);
-		if(newAddressBook.isPresent()) {
-			return newAddressBook.get();
+		if(newAddressBook.isEmpty()) {
+			log.warn("Unable to find address book details for given id: "+id);
+			throw new AddressBookException("Address Book Details for id not found");
 		}
-		else {
-			return null;
-		}
+		return newAddressBook.get();
 	}
-	//Created method which serves controllers api call to update record by id
-	public AddressBook updateRecordById(Integer id, AddressBookDTO addressBookDTO) {
-		AddressBook newAddressBook = new AddressBook(id,addressBookDTO);
-		AddressBook addressBook = repo.save(newAddressBook);
+	//Created service method which serves controller api to retrieve all records 
+	public List<AddressBook> getRecord(){
+		List<AddressBook> addressBook = repo.findAll();
+		log.info("Found all records in Address Book");
 		return addressBook;
 	}
-	//Created method which serves controllers api call to delete record by id
-	public String deleteRecordById(Integer id) {
-		repo.deleteById(id);
-		return null;
+	//Created service method which serves controller api to update record by id 
+	public AddressBook updateRecordById(Integer id, AddressBookDTO addressBookDTO) {
+		Optional<AddressBook> addressBook = repo.findById(id);
+		if(addressBook.isEmpty()) {
+			throw new AddressBookException("Address Book Details for id not found");
+		}
+		AddressBook newBook = new AddressBook(id,addressBookDTO);
+		repo.save(newBook);
+		log.info("Address Book Data got updated for id: "+id);
+		return newBook;
 	}
-
+	//Created service method which serves controller api to delete record by id 
+	public String deleteRecordById(Integer id) {
+//		List<AddressBook> addressList = repo.findAll();
+//		AddressBook newAddressBook = addressList.stream().filter(addressData->addressData.getId()==id)
+//				.findFirst()
+//				.orElseThrow(()->new AddressBookException("Particular address book details not found"));
+//		repo.delete(newAddressBook);
+		Optional<AddressBook> newAddressBook = repo.findById(id);
+		if(newAddressBook.isEmpty()) {
+			log.warn("Unable to find address book details for given id: "+id);
+			throw new AddressBookException("Address Book Details not found");
+		}
+		else {
+			repo.deleteById(id);
+		}
+		return null;	
+	}
+	//Created service method which serves controller api to get record by city
+	public List<AddressBook> getRecordByCity(String city) {
+//		List<AddressBook> addressList = repo.findAll();
+//		AddressBook newAddressBook = addressList.stream().filter(addressData->addressData.getCity()==city)
+//									.findFirst()
+//									.orElseThrow(()->new AddressBookException("Particular address book details not found"));
+		List<AddressBook> newAddressBook = repo.findByCity(city);
+		if(newAddressBook.isEmpty()) {
+			log.warn("Unable to find address book details for given city: "+city);
+			throw new AddressBookException("Address Book Record not Found");
+		}
+		return newAddressBook;
+	}
 }
