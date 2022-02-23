@@ -1,17 +1,26 @@
 package com.bridgelabz.addressbook.service;
 
+import java.util.List;
+
 import com.bridgelabz.addressbook.dto.AddressBookDTO;
+import com.bridgelabz.addressbook.model.AddressBook;
 
 //Created IAddressBookService interface to achieve abstraction
 public interface IAddressBookService {
 
-	public String getMessage(String name);
+	public String getMessage();
 
-	public String getWelcome(AddressBookDTO addressBookDTO);
+	public AddressBook saveRecordToRepo(AddressBookDTO addressBookDTO);
 
-	public String getHiMessage(String fName);
+	public List<AddressBook> getAllRecords();
 
-	public String getWelcomeMessage(String fName, String lName);
+	public AddressBook getRecordById(Integer id);
 
+	public AddressBook updateRecordById(Integer id, AddressBookDTO addressBookDTO);
+
+	public String deleteRecordById(Integer id);
+
+
+	
 	
 }
